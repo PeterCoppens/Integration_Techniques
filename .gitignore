@@ -1,0 +1,15 @@
+# Latex-related files
+*.aux
+*.log
+report.pdf
+*.synctex.gz
+# aspell
+*.bak
+# Simulink files
+Session3/slprj
+*.slx.autosave
+# MATLAB
+*.m~
+*.fdb_latexmk
+*.fls
+

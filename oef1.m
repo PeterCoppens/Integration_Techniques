@@ -17,6 +17,8 @@ plot(x, f3(x));
 plot(x, f4(x));
 plot(x, f5(x));
 plot(x, f6(x));
+legend({'$f_1(x)$', '$f_2(x)$', '$f_3(x)$', '$f_4(x)$', '$f_5(x)$', '$f_6(x)$'}, 'interpreter', 'latex')
+xlabel('$x$', 'interpreter', 'latex');
 
 %% Analytische oplossingen
 I1 = @(x) x.^21/21;
@@ -55,13 +57,8 @@ for i = n
     errg(4, i) = abs(Ig-Iex)/abs(Iex);
     errcc(4, i) = abs(Icc-Iex)/abs(Iex);
     
-    Iex = I5(1)-I5(-1);
-    Ig = gauss(f5, i);
-    Icc = clenshaw_curtis(f5, i);
-    errg(5, i) = abs(Ig-Iex)/abs(Iex);
-    errcc(5, i) = abs(Icc-Iex)/abs(Iex);
-    
-    Iex = I5(1)-I5(-1);
+    % discontinuity at 0
+    Iex = 2*(I5(1)-I5(0));
     Ig = gauss(f5, i);
     Icc = clenshaw_curtis(f5, i);
     errg(5, i) = abs(Ig-Iex)/abs(Iex);
@@ -77,8 +74,13 @@ end
 %% Plot errors
 figure();
 for i=1:6
-    subplot(3,2,i); semilogy(errg(i, :)); hold on;
-    subplot(3,2,i); semilogy(errcc(i, :));
+    subplot(3,2,i); 
+    semilogy(errg(i, :)); hold on;
+    semilogy(errcc(i, :));
+    title(sprintf('$f_%d(x)$', i), 'interpreter', 'latex');
+    xlabel('$n$', 'interpreter', 'latex');
+    ylabel('$|I - I_n/|I|$', 'interpreter', 'latex');
+    legend({'gauss', 'clenshaw-curtis'})
 end
 
 %% Plot errors
@@ -89,6 +91,6 @@ for i=1:6
     subplot(3,2,i); plot(-log10(errg(i, :))); hold on;
     subplot(3,2,i); plot(-log10(errcc(i, :)));
     cost_g = find(-log10(errg(i, :))>=7, 1, 'first');
-    cost_cc = find(-log10(errg(i, :))>=7, 1, 'first');
+    cost_cc = find(-log10(errcc(i, :))>=7, 1, 'first');
     fprintf('f%d: cost -- gauss: %d -- clenshaw-curtis: %d\n', i, n(cost_g), n(cost_cc));
 end
