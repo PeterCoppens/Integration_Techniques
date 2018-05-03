@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+
+\title{Praktische foutenschatters d.m.v. nulregels}
+\author{}
+\date{}
+
+\setlength\parindent{0pt}
+
+\graphicspath{{./figs/}}
+
+\begin{document}
+\maketitle
+
+\section{Trapezium regel}
+We gebruiken de samengestelde regel beschreven in (Numerical approximation of integrals). Om dan de trapezium regel te implementeren, nemen we $w_j = \left\{1, 1\right\}$, $x_j = \left\{-1, 1\right\}$. \\
+
+Deze implementatie geeft de relatieve errors: \\
+$f_1: 0.142316$ \\
+$f_2: 0.953713$ \\
+$f_3: 0.927164$ \\
+$f_4: 0.835887$. \\
+
+Dit zijn niet geweldige resultaten.
+
+\end{document}
