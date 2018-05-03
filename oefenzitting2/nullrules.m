@@ -1,4 +1,4 @@
-function [ U ] = nulrules( x )
+function [ U ] = nullrules( x )
     n = length(x); % n+1 in fact
     U = zeros(n);
     vandermonde = flipud(vander(x)');
