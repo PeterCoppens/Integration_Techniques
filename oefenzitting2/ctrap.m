@@ -1,16 +1,11 @@
-function Q = ctrap(f, k)
-    a = -1; b = 1;
-    xj = [a, b];
-    xi = linspace(a, b, k+1);
-    xij = @(i, j) xi(i-1) + ((b-a)/(2*k))*(1+xj(j));
-    w = [(b-a)/2, (b-a)/2];
-
-    Q = 0;
-    for i=2:k+1
-        for j=1:2
-            Q = Q + w(j)*f(xij(i, j));
-        end
+function q = ctrap(k, f)    
+    h = 2/k;
+    q = (h/2)*[1, 2*ones(1, k-2), 1];
+    
+    if exist('f','var')
+        x = -1 + h*(0:k);
+        xf = linspace(-1, 1, 1000);
+        plot(xf, abs(f(xf)-interp1(x,f(x),xf)), 'b-');
     end
-    Q = ((b-a)/(2*k))*Q;
 end
 
