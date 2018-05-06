@@ -38,7 +38,6 @@ title('ej for exp(-x^2)')
 subplot(2,2,4)
 semilogy(1:length(errors(f4,x)),abs(errors(f4,x)),'--o')
 title('ej for 1/(1+16x^2)')
-t=0;
 figure(2)
 subplot(2,2,1)
 plot(1:length(reductions(f1,x)),reductions(f1,x),'--o')
@@ -93,7 +92,7 @@ function [ U ] = nullrules( x )
         U(:,m) = U(:,m)/norm(U(:,m));
     end
     U=flipud(U');
-    U=U(2:end-1,1:end);
+    U=U(2:end-5,1:end);
 end
 function I=CheckNullRule(U,x)
 I=zeros(size(U,1),1);
@@ -101,43 +100,38 @@ for i=1:size(I)
     I(i)=U(i,:)*(x.^(i-1))';
 end
 end
-function e=errors(f,x)
+%The 'relevant' index set is a relic of older code, that was difficult to
+%remove in a short time.
+function [e,relevant]=errors(f,x)
 U=nullrules(x((end+1)/2:end));
 U2=fliplr(U);
 U=[U2(1:end,1:end-1),U];
 e=U*feval(f,x)';
-ind=find(abs(e)>10^(-14));
-e=e(ind);
+relevant=find(abs(e)>10^(-30))
+irr=find(abs(e)<=10^(-30))
+e(irr)=0
 end
-function E=errorsnew(f,x)
-e=errors(f,x);
-n=(length(e)-mod(length(e),2) )/2
+function [E,relevant]=errorsnew(f,x)
+[e,relevant]=errors(f,x)
+n=(length(relevant)-mod(length(relevant),2) )/2
 for i=1:n
-    E(i)=sqrt(e(2*i-1)^2+e(2*i)^2);
+    E(i)=sqrt(e(relevant(2*i-1))^2+e(relevant(2*i))^2)
 end
 end
 
 function r=reductions(f,x)
-e=errors(f,x);
-r=e(2:end)./e(1:end-1);
+[e,relevant]=errors(f,x);
+r=e(relevant(2:end))./e(relevant(1:end-1))
 end
 function R=reductions2(f,x)
-E=errorsnew(f,x);
-R=E(2:end)./E(1:end-1);
+[E,relevant]=errorsnew(f,x);
+R=E(2:end)./E(1:end-1)
 end
 
-function Q = ctrap(f, k)
-    a = -1; b = 1;
-    xj = [a, b];
-    xi = linspace(a, b, k+1);
-    xij = @(i, j) xi(i-1) + ((b-a)/(2*k))*(1+xj(j));
-    w = [(b-a)/2, (b-a)/2];
-
-    Q = 0;
-    for i=2:k+1
-        for j=1:2
-            Q = Q + w(j)*f(xij(i, j));
-        end
-    end
-    Q = ((b-a)/(2*k))*Q;
+function q = ctrap(f,k)    
+    h = 2/k;
+    qvec = (h/2)*[1, 2*ones(1, k-2), 1];
+    x=linspace(-1,1,k);
+    x=feval(f,x)';
+    q=(qvec*x);
 end
